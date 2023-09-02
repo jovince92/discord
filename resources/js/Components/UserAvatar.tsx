@@ -1,7 +1,5 @@
 import React, { FC } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { usePage } from '@inertiajs/react';
-import { PageProps, User } from '@/types';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
 
 interface UserAvatarProps{

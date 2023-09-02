@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ServerController;
 use App\Models\Member;
@@ -41,13 +42,20 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('server')->name('server.')->group(function(){
         Route::get('/{server_id}', [ServerController::class, 'index'])->name('index');
         Route::get('invite/{invite_code}', [ServerController::class, 'invite'])->name('invite');
+        Route::post('leave', [ServerController::class, 'leave'])->name('leave');
         Route::post('store', [ServerController::class, 'store'])->name('store');
         Route::post('update', [ServerController::class, 'update'])->name('update');
         Route::post('generate', [ServerController::class, 'generate'])->name('generate');
+        Route::post('destroy', [ServerController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('member')->name('member.')->group(function(){
         Route::post('/role_change', [MemberController::class, 'role_change'])->name('role_change');
+        Route::post('/kick', [MemberController::class, 'kick'])->name('kick');
+    });
+
+    Route::prefix('channel')->name('channel.')->group(function(){
+        Route::post('store', [ChannelController::class, 'store'])->name('store');
     });
     
 });

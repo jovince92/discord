@@ -84,6 +84,25 @@ const MemberModalItem:FC<MemberModalItemProps> = ({user,current_server}) =>{
         });
     }
 
+    const onKick = () =>{
+        setProcessing(true);
+        router.visit(route('member.kick'),{
+            method:'post',
+            data:{
+                server_id:current_server.id,
+                user_id:user.id
+            },
+            preserveState:true,
+            onFinish:()=>{
+                setProcessing(false);
+                toast({
+                    'title':'Success',
+                    'description':`${user.name} has been Kicked!`
+                })
+            }
+        });
+    }
+
 
     return(
         <>
@@ -131,7 +150,7 @@ const MemberModalItem:FC<MemberModalItemProps> = ({user,current_server}) =>{
                                         </DropdownMenuPortal>
                                     </DropdownMenuSub>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={onKick}>
                                         <Gavel className='h-4 w-4 mr-1.5' />
                                         Kick
                                     </DropdownMenuItem>

@@ -13,4 +13,9 @@ class MemberController extends Controller
             'member_role'=>$request->role
         ]);
     }
+
+    public function kick(Request $request){
+        $member=Member::where('user_id',$request->user_id)->where('server_id',$request->server_id)->first();
+        $member->delete();
+    }
 }

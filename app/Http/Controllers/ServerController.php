@@ -136,9 +136,11 @@ class ServerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $server=Server::findOrFail($request->server_id);
+        $server->delete();
+        return redirect(route('home'));
     }
 
 
@@ -166,5 +168,9 @@ class ServerController extends Controller
         return $server->invite_code;
     }
 
-    
+    public function leave(Request $request){
+        $member=Member::where('user_id',Auth::id())->where('server_id',$request->server_id)->first();
+        $member->delete();
+        return redirect(route('home'));
+    }
 }
