@@ -23,7 +23,8 @@ class ServerController extends Controller
         if(!$check){
             return abort(403);
         }
-        Inertia::share('current_server',Server::with(['users','channels'])->where('id',$server_id)->first());
+        $server=Server::with(['users','channels'])->where('id',$server_id)->firstOrFail();
+        Inertia::share('current_server',$server);
         return Inertia::render('Home');
     }
 

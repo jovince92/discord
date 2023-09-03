@@ -29,7 +29,8 @@ const CreateChannelModal:FC = () => {
 
     const onSubmit:FormEventHandler = (e) =>{
         e.preventDefault();
-        post(route('channel.store'),{
+        
+        post(route('server.channel.store',{server_id:data.server_id}),{
             onSuccess:()=>{
                 onClose();
                 toast({'title':'Success','description':'Channel Created'});

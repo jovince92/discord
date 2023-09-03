@@ -3,17 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Channel;
+use App\Models\Member;
+use App\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ChannelController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($server_id,$channel_id)
     {
-        //
+        $check = Member::where('server_id',$server_id)->where('user_id',Auth::id())->first();
+        if(!$check){
+            return abort(403);
+        }
+        $channel=Channel::where('id',$channel_id)->firstOrFail();
+        $server=Server::with(['users','channels'])->where('id',$server_id)->firstOrFail();
+        Inertia::share('current_server',$server);
+        Inertia::share('current_channel',$channel);
+        return Inertia::render('Home');
     }
 
     /**
