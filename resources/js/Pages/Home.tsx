@@ -1,8 +1,7 @@
 
 import Layout from '@/Components/Layouts/Layout';
+import ChannelLayout from '@/Components/Layouts/ChannelLayout/ChannelLayout';
 import ServerIdLayout from '@/Components/Layouts/ServerIdLayout/ServerIdLayout';
-import ModeToggle from '@/Components/ModeToggle';
-import { Button } from '@/Components/ui/button';
 import { Link, Head } from '@inertiajs/react';
 
 const Home = () => {
@@ -11,9 +10,7 @@ const Home = () => {
             <Head title='Discord Clone' />
                 <Layout>
                     <ServerIdLayout>
-                        <div>Homess</div>
-                        <ModeToggle/>
-                        <Button >TST</Button>
+                        <ChannelLayout />
                     </ServerIdLayout>
                 </Layout>
         </>

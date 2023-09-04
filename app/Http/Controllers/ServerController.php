@@ -19,13 +19,11 @@ class ServerController extends Controller
      */
     public function index($server_id)
     {
-        $check = Member::where('server_id',$server_id)->where('user_id',Auth::id())->first();
-        if(!$check){
-            return abort(403);
-        }
-        $server=Server::with(['users','channels'])->where('id',$server_id)->firstOrFail();
-        Inertia::share('current_server',$server);
-        return Inertia::render('Home');
+        $channel=Channel::where('server_id',$server_id)->where('name','general')->firstOrFail();
+        return redirect(route('server.channel.index',[
+            'server_id'=>$server_id,
+            'channel_id'=>$channel->id
+        ]));
     }
 
     /**

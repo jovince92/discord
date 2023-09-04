@@ -1,3 +1,5 @@
+import Echo from "laravel-echo";
+
 export type MemberRole='ADMIN'|'MODERATOR'|"GUEST";
 export type ChannelType='TEXT'|'VIDEO'|'AUDIO';
 
@@ -35,6 +37,14 @@ export interface Channel{
     created_at:string;
 }
 
+export interface Conversation{
+    id:number;
+    initiator_id:number;
+    initiator:User;
+    reciever_id:number;
+    reciever:User;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
@@ -42,6 +52,15 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     servers:Server[];
     current_server:Server;
     current_channel?:Channel;
-    current_conversation?:User;
+    current_conversation?:Conversation;
     base_url:string;
 };
+
+
+
+declare global {
+    interface Window {
+        Pusher: any;
+        Echo:Echo
+    }
+  }

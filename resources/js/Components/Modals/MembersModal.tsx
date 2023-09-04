@@ -1,5 +1,5 @@
 import {  FC,  useCallback,  useEffect,  useMemo, useState } from 'react';
-import { Dialog, DialogContent,  DialogDescription,  DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent,  DialogDescription,  DialogHeader, DialogTitle } from '@/Components/ui/dialog';
 import { useModal } from '@/Hooks/useModalStore';
 import { Label } from '../ui/label';
 
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '../ui/scroll-area';
 import UserAvatar from '../UserAvatar';
 import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
-import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuPortal,DropdownMenuSeparator,DropdownMenuSub,DropdownMenuSubContent,DropdownMenuSubTrigger,DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuPortal,DropdownMenuSeparator,DropdownMenuSub,DropdownMenuSubContent,DropdownMenuSubTrigger,DropdownMenuTrigger } from '@/Components/ui/dropdown-menu';
 
 
 const roleIconMap ={

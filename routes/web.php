@@ -49,6 +49,12 @@ Route::middleware(['auth'])->group(function(){
                 Route::post('update', [ChannelController::class, 'update'])->name('update');
                 Route::post('destroy', [ChannelController::class, 'destroy'])->name('destroy');
             });
+
+
+            Route::prefix('conversation')->name('conversation.')->group(function(){
+                Route::get('/{conversation_id}', [ConversationController::class, 'index'])->name('index');
+                Route::post('initiate', [ConversationController::class, 'initiate'])->name('initiate');
+            });
         });
         Route::get('invite/{invite_code}', [ServerController::class, 'invite'])->name('invite');
         Route::post('leave', [ServerController::class, 'leave'])->name('leave');
@@ -68,9 +74,7 @@ Route::middleware(['auth'])->group(function(){
 
     
 
-    Route::prefix('conversation')->name('conversation.')->group(function(){
-        Route::post('show/{conversation_id}', [ConversationController::class, 'show'])->name('show');
-    });
+    
 
     
     
