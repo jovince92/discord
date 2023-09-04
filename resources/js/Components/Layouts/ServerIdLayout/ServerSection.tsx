@@ -21,7 +21,7 @@ const ServerSection:FC<ServerSectionProps> = ({label,role,sectionType,channelTyp
             {
                 (role!=='GUEST' && sectionType==='Channel')&&(
                     <ActionTooltip label='Create Channel' side='top'>
-                        <Button onClick={()=>onOpen('CreateChannel')} className='!h-8 !w-8' size='icon' variant='outline'> <Plus className='h-4 w-4' /> </Button>
+                        <Button onClick={()=>onOpen('CreateChannel',{channelType})} className='!h-8 !w-8' size='icon' variant='outline'> <Plus className='h-4 w-4' /> </Button>
                     </ActionTooltip>
                 )
             }

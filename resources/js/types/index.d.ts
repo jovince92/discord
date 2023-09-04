@@ -42,5 +42,6 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     servers:Server[];
     current_server:Server;
     current_channel?:Channel;
+    current_conversation?:User;
     base_url:string;
 };

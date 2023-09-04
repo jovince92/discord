@@ -46,6 +46,8 @@ Route::middleware(['auth'])->group(function(){
             Route::prefix('channel')->name('channel.')->group(function(){
                 Route::get('/{channel_id}', [ChannelController::class, 'index'])->name('index');
                 Route::post('store', [ChannelController::class, 'store'])->name('store');
+                Route::post('update', [ChannelController::class, 'update'])->name('update');
+                Route::post('destroy', [ChannelController::class, 'destroy'])->name('destroy');
             });
         });
         Route::get('invite/{invite_code}', [ServerController::class, 'invite'])->name('invite');

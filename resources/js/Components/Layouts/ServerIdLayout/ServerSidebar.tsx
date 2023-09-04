@@ -17,7 +17,7 @@ const ICONMAP ={
     'AUDIO':<Mic className='mr-1.5 h-4 w-4' />,
 }
 
-const ROLEICONMAP ={
+export const ROLEICONMAP ={
     'GUEST':null,
     'MODERATOR':<ShieldCheck className='mr-1.5 h-4 w-4 text-indigo-500' />,
     'ADMIN':<ShieldAlert className='mr-1.5 h-4 w-4 text-rose-500' />,

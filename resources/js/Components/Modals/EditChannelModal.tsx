@@ -11,35 +11,35 @@ import { toast } from '../ui/use-toast';
 
 type FormData = {
     name:string,
-    server_id:number,
+    channel_id?:number,
     type:ChannelType
 }
 
 const CHANNELTYPES:ChannelType[] =['TEXT','AUDIO','VIDEO'];
 
-const CreateChannelModal:FC = () => {
+const EditChannelModal:FC = () => {
     
     const {current_server} = usePage<PageProps>().props;
     const {isOpen,onClose,type,data:ModalData} = useModal();
-    const {channelType} = ModalData;
+    const {channel} = ModalData;
     const { data, setData, post, processing, errors, reset } = useForm<FormData>({
-        server_id:current_server.id,
-        name: '',
-        type:'TEXT'
+        channel_id:channel?.id,
+        name: channel?.name||"",
+        type: channel?.type|| 'TEXT'
     });
 
     const onSubmit:FormEventHandler = (e) =>{
         e.preventDefault();
         
-        post(route('server.channel.store',{server_id:data.server_id}),{
+        post(route('server.channel.update',{server_id:current_server.id}),{
             onSuccess:()=>{
                 onClose();
-                toast({'title':'Success','description':'Channel Created'});
+                toast({'title':'Success','description':'Channel Updated'});
             }
         });
     }
     
-    const OPEN = useMemo(()=>isOpen&&type==='CreateChannel',[isOpen,type])
+    const OPEN = useMemo(()=>isOpen&&type==='EditChannel',[isOpen,type])
     const handleClose = () =>{
         reset();
         onClose();
@@ -50,17 +50,20 @@ const CreateChannelModal:FC = () => {
         if(errors.type)toast({'variant':'destructive', 'title':'Error','description':errors.type});
     },[errors]);
 
+    
+
     useEffect(()=>{
-        if(channelType){
-            setData('type',channelType);
+        if(channel){
+            console.log(channel);
+            setData(val=>({...val,name:channel.name,type:channel.type,channel_id:channel.id}));
         }
-    },[channelType])
+    },[channel]);
 
     return (
         <Dialog open={OPEN} onOpenChange={handleClose}>   
             <DialogContent className='p-0 overflow-auto'>
                 <DialogHeader className='pt-7 px-5'>
-                    <DialogTitle className='text-2xl text-center font-bold'>Create Channel</DialogTitle>
+                    <DialogTitle className='text-2xl text-center font-bold'>Edit Channel </DialogTitle>
                 </DialogHeader>
                 <form id='channel' onSubmit={onSubmit} className='flex flex-col space-y-7'>
                     <div className='flex flex-col space-y-7 px-5'>
@@ -86,11 +89,11 @@ const CreateChannelModal:FC = () => {
                     </div>
                 </form>
                 <DialogFooter className='px-5 py-3.5'>
-                    <Button  disabled={processing} form='channel' className='ml-auto'>Create Channel</Button>
+                    <Button  disabled={processing} form='channel' className='ml-auto'>Save Changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     )
 }
 
-export default CreateChannelModal
+export default EditChannelModal
