@@ -37,6 +37,16 @@ export interface Channel{
     created_at:string;
 }
 
+export interface Message{
+    id:number;
+    user_id:number;
+    user:User;
+    channel_id:number;
+    channel:number;
+    content:string;
+    file:string;
+}
+
 export interface Conversation{
     id:number;
     initiator_id:number;
@@ -63,4 +73,4 @@ declare global {
         Pusher: any;
         Echo:Echo
     }
-  }
+}
