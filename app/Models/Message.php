@@ -15,4 +15,10 @@ class Message extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function getFileAttribute($value){
+        if($value && str_contains( strtolower($value),'http')){return $value;}
+        if(!$value){return null;}
+        return url('/').'/'. $value;
+    }
 }

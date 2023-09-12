@@ -31,8 +31,8 @@ class NewChatMessageEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            //new PresenceChannel('channel_'.strval($this->message->channel_id)),
-            new PresenceChannel('global_channel')
+            new PresenceChannel('channel_'.strval($this->message->channel_id)),
+            //new PresenceChannel('global_channel')
         ];
     }
 }

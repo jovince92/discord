@@ -1,9 +1,9 @@
 import { PageProps, Server, User } from '@/types';
-import { usePage } from '@inertiajs/react';
 import { Hash,  } from 'lucide-react';
 import React, { FC } from 'react'
 import MobileToggle from '../MobileToggle';
 import UserAvatar from '../UserAvatar';
+import WebSocketIndicator from '../WebSocketIndicator';
 
 interface ChatHeaderProps{
     server:Server;
@@ -23,6 +23,9 @@ const ChatHeader:FC<ChatHeaderProps> = ({server,name,type,user}) => {
                 type==='Conversation' && <UserAvatar className='h-8 w-8 mr-2' user={user} />
             }
             <p className='font-semibold text-base text-black dark:text-white'>{name}</p>
+            <div className='ml-auto flex items-center'>
+                <WebSocketIndicator />
+            </div>
         </div>
     )
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('conversation_id')->index();
             $table->text('content');
-            $table->text('file');
+            $table->text('file')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

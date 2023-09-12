@@ -25,7 +25,7 @@ const ServerSearch:FC<ServerSearchProps> = ({data}) => {
     const {current_server} = usePage<PageProps>().props;
     
     const handleSelect = ({id,type}:{id:number,type:"CHANNEL"|"MEMBER"}) =>{
-        console.log('test');
+        
         setOpen(false);
         if(type==='MEMBER'){
             

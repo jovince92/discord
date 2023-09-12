@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ServerController;
 use App\Models\Member;
 use Illuminate\Support\Facades\Auth;
@@ -44,10 +45,22 @@ Route::middleware(['auth'])->group(function(){
         Route::prefix('/{server_id}')->group(function(){
             Route::get('/', [ServerController::class, 'index'])->name('index');
             Route::prefix('channel')->name('channel.')->group(function(){
-                Route::get('/{channel_id}', [ChannelController::class, 'index'])->name('index');
+                Route::prefix('/{channel_id}')->group(function(){
+                    Route::get('/', [ChannelController::class, 'index'])->name('index');
+                    Route::prefix('message')->name('message.')->group(function(){
+                        Route::post('destroy', [MessageController::class, 'destroy'])->name('destroy');
+                        Route::post('update', [MessageController::class, 'update'])->name('update');
+                        Route::post('store', [MessageController::class, 'store'])->name('store');
+                        Route::get('/', [MessageController::class, 'index'])->name('index');
+                    });
+                });
                 Route::post('store', [ChannelController::class, 'store'])->name('store');
                 Route::post('update', [ChannelController::class, 'update'])->name('update');
                 Route::post('destroy', [ChannelController::class, 'destroy'])->name('destroy');
+
+
+                
+
             });
 
 
@@ -82,5 +95,6 @@ Route::middleware(['auth'])->group(function(){
 
 
 
+Route::get('/test', [MessageController::class, 'test'])->name('test');
 
 require __DIR__.'/auth.php';

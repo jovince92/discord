@@ -23,3 +23,9 @@ Broadcast::channel('global_channel', function ($user) {
         return $user;
     }
 });
+
+Broadcast::channel('channel_{channel_id}', function ($user,$channel_id) {
+    if(Auth::check()){
+        return $user;
+    }
+});

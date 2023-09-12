@@ -4,8 +4,6 @@ import React, { FC } from 'react'
 import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import ActionTooltip from './ActionToolTip';
 import { useModal } from '@/Hooks/useModalStore';
-import { router, usePage } from '@inertiajs/react';
-import { PageProps } from '@/types';
 
 
 interface NavigationActionProps extends HTMLAttributes<HTMLButtonElement>{

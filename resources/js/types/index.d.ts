@@ -44,7 +44,10 @@ export interface Message{
     channel_id:number;
     channel:number;
     content:string;
-    file:string;
+    file?:string|undefined;
+    created_at:string;
+    updated_at:string;
+    deleted_at:string;
 }
 
 export interface Conversation{
@@ -65,6 +68,27 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     current_conversation?:Conversation;
     base_url:string;
 };
+
+export interface PaginatedMessage{
+    current_page:number;
+    data:Message[];
+    first_page_url:string;
+    from:number;
+    last_page:number;
+    last_page_url:string;
+    links:{
+        url:string;
+        label:string;
+        active:boolean;
+    }[];
+    next_page_url:string;
+    path:string;
+    per_page:number;
+    prev_page_url:string;
+    to:number;
+    total:number;
+
+}
 
 
 
