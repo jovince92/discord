@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ThemeProvider } from './lib/ThemeProvider';
 import { Toaster } from './Components/ui/toaster';
+import QueryProvider from './Providers/QueryProvider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -16,9 +17,12 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
+
             <ThemeProvider>
                 <Toaster />
-                <App {...props} />
+                <QueryProvider>
+                    <App {...props} />
+                </QueryProvider>
             </ThemeProvider>
         );
     },

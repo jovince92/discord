@@ -1,13 +1,13 @@
 import { Channel, ChannelType, Server } from '@/types';
 import {create} from 'zustand';
 
-export type ModalType = "CreateServer"|"Invite"|"EditServer"|"Members"|"CreateChannel"|"LeaveServer"|"DeleteServer"|"EditChannel"|"DeleteChannel"|"MessageFile";
+export type ModalType = "CreateServer"|"Invite"|"EditServer"|"Members"|"CreateChannel"|"LeaveServer"|"DeleteServer"|"EditChannel"|"DeleteChannel"|"MessageFile"|"DeleteMessage";
 
 interface ModalData {
     server?:Server;
     channel?:Channel;
     channelType?:ChannelType;
-    newMsgRoute?:string;
+    apiRoute?:string;
 }
 
 interface ModalStore{

@@ -8,12 +8,12 @@ import EmojiPicker from '../EmojiPicker';
 import axios from 'axios';
 
 interface ChatInputProps{
-    newMsgRoute:string;
+    apiRoute:string;
     name:string;
     type:"Channel"|"Conversation";
 }
 
-const ChatInput:FC<ChatInputProps> = ({newMsgRoute,name,type}) => {
+const ChatInput:FC<ChatInputProps> = ({apiRoute,name,type}) => {
     const [sending,setSending]=useState(false);
     
     const [message,setMsg]=useState("");
@@ -24,7 +24,7 @@ const ChatInput:FC<ChatInputProps> = ({newMsgRoute,name,type}) => {
             return toast({description:'Input Message',variant:'destructive'});
         }
         setSending(true);
-        axios.post(newMsgRoute,{
+        axios.post(apiRoute,{
             message
         })
         .then(()=>setMsg(""))
@@ -38,7 +38,7 @@ const ChatInput:FC<ChatInputProps> = ({newMsgRoute,name,type}) => {
     return (
         <form onSubmit={onSubmit}>
             <div className='relative px-4 pb-6'>
-                <button disabled={sending} type='button' onClick={()=>onOpen('MessageFile',{newMsgRoute})} className='absolute top-2 left-8 h-6 w-6 bg-neutral-500 dark:bg-neutral-400 hover:bg-neutral-600 dark:hover:bg-neutral-300 transition rounded-full p-1 flex items-center justify-center'>
+                <button disabled={sending} type='button' onClick={()=>onOpen('MessageFile',{apiRoute})} className='absolute top-2 left-8 h-6 w-6 bg-neutral-500 dark:bg-neutral-400 hover:bg-neutral-600 dark:hover:bg-neutral-300 transition rounded-full p-1 flex items-center justify-center'>
                     <Plus className='text-white dark:text-neutral-900' />
                 </button>
                 <Input placeholder={`Send to ${type==='Conversation'?name:'#'+name}`} value={message} onChange={({target})=>setMsg(target.value)} disabled={sending} className='px-12 py-5 bg-neutral-200/90 dark:bg-neutral-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-neutral-600 dark:text-neutral-200'  />

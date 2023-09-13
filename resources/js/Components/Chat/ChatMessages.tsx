@@ -1,6 +1,6 @@
 import { PageProps, User } from '@/types';
 import { usePage } from '@inertiajs/react';
-import {FC,  useMemo} from 'react'
+import {FC,  useEffect,  useRef} from 'react'
 import ChatWelcome from './ChatWelcome';
 import { useChatQuery } from '@/Hooks/useChatQuery';
 import { Loader2, ServerCrash } from 'lucide-react';
@@ -13,15 +13,24 @@ interface ChatMessagesProps{
 
 const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
     
-    const {current_server,current_channel,auth} = usePage<PageProps>().props;
-    const {user} = auth;
-    const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useChatQuery({queryRoute:getMsgsRoute,value:""});
+    const {current_channel,auth} = usePage<PageProps>().props;
+    
     if(!current_channel){
         return null;
     }
+    
+    const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useChatQuery({queryRoute:getMsgsRoute,queryKey:`channel_${current_channel.id.toString()}`,value:""});
+    const paginatedMessage=data?.pages[0];
+    const messages=paginatedMessage?.data;
+    
 
-    const paginatedMessage=useMemo(()=>(data?.pages||data?.pages[0])?data.pages[0]:undefined,[data?.pages]);
-
+    const chatRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
+    useEffect(()=>{
+        if(data?.pages[1]){
+            console.log(data?.pages[1])
+        }
+    },[data?.pages]);
     if(status==='loading'){
         return(
             <div className='flex flex-col flex-1 justify-center items-center'>
@@ -41,16 +50,34 @@ const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
     }
 
     return (
-        <div className='flex-1 flex flex-col py-3.5 overflow-y-auto'>
-            <div className='flex-1' />
-            <ChatWelcome type={type} name={current_channel.name} />
+        <div ref={chatRef} className='flex-1 flex flex-col py-3.5 overflow-y-auto'>
+            {
+                !hasNextPage&&(
+                    <>
+                        <div className='flex-1' />
+                        <ChatWelcome type={type} name={current_channel.name} />
+                    </>
+                )
+            }
+            {
+                hasNextPage && (
+                    <div className='flex justify-center'>
+                        {
+                            isFetchingNextPage?<Loader2 className='h-6 w-6 text-neutral-600 animate-ping' />:(
+                                <button onClick={()=>fetchNextPage()} className='text-neutral-500 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300 transition text-xs'>Load Previous Messages...</button>
+                            )
+                        }
+                    </div>
+                )
+            }
             <div className='flex flex-col-reverse mt-auto'>
                 {
-                    paginatedMessage?.data.map(message=>(
+                    messages?.map(message=>(
                         <ChatItem key={message.id} message={message} />
                     ))
                 }
             </div>
+            <div ref={bottomRef} />
         </div>
     )
 }

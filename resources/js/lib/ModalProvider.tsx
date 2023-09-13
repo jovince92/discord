@@ -2,8 +2,9 @@
 
 import CreateChannelModal from '@/Components/Modals/CreateChannelModal';
 import CreateServerModal from '@/Components/Modals/CreateServerModal';
-import DeleteChannelConfirmationModal from '@/Components/Modals/DeleteChannelConfirmationModal copy';
+import DeleteChannelConfirmationModal from '@/Components/Modals/DeleteChannelConfirmationModal';
 import DeleteConfirmationModal from '@/Components/Modals/DeleteConfirmationModal';
+import DeleteMessageConfirmationModal from '@/Components/Modals/DeleteMessageConfirmationModal';
 import EditChannelModal from '@/Components/Modals/EditChannelModal';
 import EditServerModal from '@/Components/Modals/EditServerModal';
 import InviteModal from '@/Components/Modals/InviteModal';
@@ -24,6 +25,7 @@ const ModalProvider = () => {
             <DeleteChannelConfirmationModal />
             <EditChannelModal />
             <MessageFileModal />
+            <DeleteMessageConfirmationModal />
         </>
     )
 }

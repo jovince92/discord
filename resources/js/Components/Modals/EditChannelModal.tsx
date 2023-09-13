@@ -54,7 +54,6 @@ const EditChannelModal:FC = () => {
 
     useEffect(()=>{
         if(channel){
-            console.log(channel);
             setData(val=>({...val,name:channel.name,type:channel.type,channel_id:channel.id}));
         }
     },[channel]);

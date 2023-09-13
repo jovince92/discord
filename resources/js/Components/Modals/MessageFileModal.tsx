@@ -21,10 +21,10 @@ const MessageFileModal:FC = () => {
 
     const onSubmit:FormEventHandler = (e) =>{
         e.preventDefault();
-        if(!ModalData.newMsgRoute){
+        if(!ModalData.apiRoute){
             return null;
         }
-        post(ModalData.newMsgRoute,{
+        post(ModalData.apiRoute,{
             preserveScroll:true,
             preserveState:true,
             onSuccess:handleClose,

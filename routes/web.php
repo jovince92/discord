@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function(){
                 Route::prefix('/{channel_id}')->group(function(){
                     Route::get('/', [ChannelController::class, 'index'])->name('index');
                     Route::prefix('message')->name('message.')->group(function(){
-                        Route::post('destroy', [MessageController::class, 'destroy'])->name('destroy');
+                        Route::post('destroy/{message_id}', [MessageController::class, 'destroy'])->name('destroy');
                         Route::post('update', [MessageController::class, 'update'])->name('update');
                         Route::post('store', [MessageController::class, 'store'])->name('store');
                         Route::get('/', [MessageController::class, 'index'])->name('index');

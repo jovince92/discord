@@ -2,7 +2,7 @@ import { Message, PageProps } from '@/types';
 import {FC,FormEventHandler,useEffect,useMemo, useState,useRef, useCallback} from 'react';
 import UserAvatar from '../UserAvatar';
 import ActionTooltip from '../Layouts/ActionToolTip';
-import { usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { ROLEICONMAP } from '../Layouts/ServerIdLayout/ServerSidebar';
 import {format} from 'date-fns'
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import axios from 'axios';
 import { toast } from '../ui/use-toast';
+import { useModal } from '@/Hooks/useModalStore';
 interface ChatItemProps{
     message:Message
 }
@@ -22,7 +23,6 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
     const [newContent,setNewContent] = useState(message.content);
     const [loading,setLoading]  = useState(false);
     const [isEditing,setIsEditing]  = useState(false);
-    const [isDeleting,setIsDeleting]=useState(false);
     
     const {user} = message;
     const {user:currentUser} = auth;
@@ -30,12 +30,20 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
     const fileType=message.file?.split(".").pop();
     
     const canDeleteMsg = useMemo(()=>!message.deleted_at &&(role==='ADMIN'||role==='MODERATOR'||currentUser.id===message.user_id),[message,role]);
-    const canEditMsg = useMemo(()=>!message.deleted_at &&(currentUser.id===message.user_id),[message,role]);
+    const canEditMsg = useMemo(()=>!message.deleted_at &&(currentUser.id===message.user_id) && !message.file,[message,role]);
     const fileImage = fileType==='pdf'?route('home')+'/uploads/pdf/pdf.png':message.file;
     
+    const {onOpen,data:ModalData} = useModal();
 
     const input = useRef<HTMLInputElement>(null);
 
+    const {post} =useForm({user_id:message.user_id});
+    const onInitiate = () =>{
+        if(message.user_id===currentUser.id){
+            return null;
+        }
+        post(route('server.conversation.initiate',{server_id:current_server.id}));
+    }
     const onSubmit:FormEventHandler<HTMLFormElement> = useCallback((e) => {
         e.preventDefault();
         if(!current_channel){
@@ -59,21 +67,21 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
         if(!current_channel){
             return;
         }
-        const deleteRoute = route('server.channel.message.update',{
+        const deleteRoute = route('server.channel.message.destroy',{
             server_id:current_server.id,
             channel_id:current_channel.id,
+            message_id:message.id
+        });
+
+        onOpen('DeleteMessage',{
+            apiRoute:deleteRoute
         });
         
-        axios.post(deleteRoute,{
-            message_id:message.id
-        })
-        //.then(()=>setIsEditing(false))
-        .catch(()=>toast({title:'Internal Error',description:'Please Try Again'}))
-        .finally(()=>setLoading(false));
 
     },[current_channel,current_server,message.id]);
 
     useEffect(()=>{
+        
         if(input.current){
             input.current.focus();
         }
@@ -95,13 +103,13 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
     return (
         <div className='relative group flex items-center hover:bg-neutral-300 dark:hover:bg-neutral-900 p-3.5 transition w-full'>
             <div className='group flex gap-x-1.5 items-start w-full'>
-                <div className='cursor-pointer hover:drop-shadow-md transition'>
+                <div onClick={onInitiate} className='cursor-pointer hover:drop-shadow-md transition'>
                     <UserAvatar user={user} />
                 </div>
                 <div className='flex flex-col w-full'>
                     <div className='flex items-center gap-x-1.5'>
                         <div className='flex items-center'>
-                            <p className='font-semibold text-sm hover:underline cursor-pointer'>
+                            <p onClick={onInitiate} className={cn('font-semibold text-sm transition ',message.user_id!==currentUser.id&&'cursor-pointer hover:underline')}>
                                 {user.name}
                             </p>
                             <ActionTooltip label={role||""}>
@@ -120,12 +128,12 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
                             
                         )
                     }
-                    {fileType==='pdf'&& <p>PDF File</p>}
+                    <p className={cn('text-xs',fileType==='pdf'?'block':'hidden')}>PDF File</p>
                     {
                         (!message.file && !isEditing) && (
                             <p className={cn('text-sm text-neutral-600 dark:text-neutral-300',
                                 message.deleted_at && 'italic text-neutral-500 dark:text-neutral-400 text-xs mt-1')}>
-                                {message.content}
+                                {!message.deleted_at?message.content:'Message Deleted'}
                                 {
                                     ((message.created_at!==message.updated_at)&&!message.deleted_at) &&(
                                         <span className='text-[0.625rem] mx-1.5 text-neutral-500 dark:text-neutral-400'>
@@ -164,7 +172,7 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
                             )
                         }
                         <ActionTooltip label='Delete'>
-                            <Trash className='cursor-pointer ml-auto w-4 h-4 text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition' />
+                            <Trash onClick={onDelete} className='cursor-pointer ml-auto w-4 h-4 text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition' />
                         </ActionTooltip>
                     </div>
                 )

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageUpdateEvent;
 use App\Events\NewChatMessageEvent;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class MessageController extends Controller
      */
     public function index($server_id,$channel_id)
     {
-        return Message::with(['user'])->where('channel_id',$channel_id)->orderBy('created_at','desc')->paginate(10);
+        return Message::withTrashed()->with(['user'])->where('channel_id',$channel_id)->orderBy('created_at','desc')->paginate(10);
     }
 
     /**
@@ -80,7 +81,7 @@ class MessageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $channel_id,$server_id)
+    public function update(Request $request,$server_id,$channel_id)
     {
         
         $msg=Message::find($request->message_id);
@@ -88,18 +89,20 @@ class MessageController extends Controller
         $msg->update([
             'content'=>$request->message??"",
         ]);
-        broadcast(new NewChatMessageEvent($msg->load(['user'])));
+        broadcast(new MessageUpdateEvent($msg->load(['user'])));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, $channel_id,$server_id)
+    public function destroy( $server_id,$channel_id,$message_id,)
     {
-        $msg=Message::find($request->message_id);
+    
+        
+        $msg=Message::find($message_id);
         
         $msg->delete();
-        //broadcast(new NewChatMessageEvent($msg->load(['user']))); TODO
+        broadcast(new MessageUpdateEvent(Message::with(['user'])->withTrashed()->where('id',$message_id)->first()));
     }
 
     public function test(Request $request){

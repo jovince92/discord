@@ -6,10 +6,11 @@ import axios from 'axios';
 interface ChatQueryProps{
     queryRoute:string;
     value:string;
+    queryKey:string;
 }
 
 
-export const useChatQuery = ({queryRoute,value}:ChatQueryProps) =>{
+export const useChatQuery = ({queryRoute,value,queryKey}:ChatQueryProps) =>{
     const fetchMessages = async ({pageParam = undefined}) =>{
         const {data} = await axios.get(queryRoute) as {data:PaginatedMessage};
         return data;
@@ -18,10 +19,11 @@ export const useChatQuery = ({queryRoute,value}:ChatQueryProps) =>{
     const {echoInstance} = useLaravelEcho();
 
     const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useInfiniteQuery({
-        queryKey:[''],
+        queryKey:[queryKey],
         queryFn:fetchMessages,
         getNextPageParam:(lastpage)=>lastpage?.next_page_url,
-        refetchInterval:echoInstance?false:1000
+        refetchInterval:echoInstance?false:1000,
+        structuralSharing:false
     }); 
 
     return {data,fetchNextPage,hasNextPage,isFetchingNextPage,status}

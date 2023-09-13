@@ -15,7 +15,7 @@ const ChannelLayout:FC<ChannelLayoutProps> = () => {
     if(!current_channel){
         return null;
     }
-    const newMsgRoute=useMemo(()=>route('server.channel.message.store',{server_id:current_server.id,channel_id:current_channel.id}),[current_server.id,current_channel.id]);
+    const apiRoute=useMemo(()=>route('server.channel.message.store',{server_id:current_server.id,channel_id:current_channel.id}),[current_server.id,current_channel.id]);
     const getMsgsRoute=useMemo(()=>route('server.channel.message.index',{server_id:current_server.id,channel_id:current_channel.id}),[current_server.id,current_channel.id]);
 
     
@@ -24,7 +24,7 @@ const ChannelLayout:FC<ChannelLayoutProps> = () => {
         <div className='bg-white dark:bg-neutral-950 flex flex-col h-full'>
             <ChatHeader name={current_channel.name} server={current_server} type='Channel' />
             <ChatMessages getMsgsRoute={getMsgsRoute} type='Channel' />
-            <ChatInput name={current_channel.name} type='Channel' newMsgRoute={newMsgRoute}  />
+            <ChatInput name={current_channel.name} type='Channel' apiRoute={apiRoute}  />
         </div>
     )
 }
