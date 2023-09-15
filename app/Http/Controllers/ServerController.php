@@ -138,6 +138,7 @@ class ServerController extends Controller
     public function destroy(Request $request)
     {
         $server=Server::findOrFail($request->server_id);
+        @unlink(public_path($server->getAttributes()['image']));
         $server->delete();
         return redirect(route('home'));
     }

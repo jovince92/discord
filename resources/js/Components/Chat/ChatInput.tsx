@@ -20,6 +20,7 @@ const ChatInput:FC<ChatInputProps> = ({apiRoute,name,type}) => {
     const {onOpen} = useModal();
     const onSubmit:FormEventHandler<HTMLFormElement> = (e) =>{
         e.preventDefault();
+        
         if(!message||message.length<1){
             return toast({description:'Input Message',variant:'destructive'});
         }

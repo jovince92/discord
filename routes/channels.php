@@ -29,3 +29,10 @@ Broadcast::channel('channel_{channel_id}', function ($user,$channel_id) {
         return $user;
     }
 });
+
+
+Broadcast::channel('conversation_{conversation_id}', function ($user,$conversation_id) {
+    if(Auth::check()){
+        return $user;
+    }
+});

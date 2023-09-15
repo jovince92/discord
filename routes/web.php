@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\LiveKitController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ServerController;
@@ -63,10 +64,13 @@ Route::middleware(['auth'])->group(function(){
 
             });
 
-
-            Route::prefix('conversation')->name('conversation.')->group(function(){
-                Route::get('/{conversation_id}', [ConversationController::class, 'index'])->name('index');
-                Route::post('initiate', [ConversationController::class, 'initiate'])->name('initiate');
+            Route::post('initiate', [ConversationController::class, 'initiate'])->name('conversation.initiate');
+            Route::prefix('conversation/{conversation_id}')->name('conversation.')->group(function(){
+                Route::get('/', [ConversationController::class, 'index'])->name('index');
+                Route::post('store', [ConversationController::class, 'store'])->name('store');
+                Route::post('update', [ConversationController::class, 'update'])->name('update');
+                Route::post('destroy/{direct_message_id}', [ConversationController::class, 'destroy'])->name('destroy');
+                Route::get('show', [ConversationController::class, 'show'])->name('show');
             });
         });
         Route::get('invite/{invite_code}', [ServerController::class, 'invite'])->name('invite');
@@ -88,11 +92,13 @@ Route::middleware(['auth'])->group(function(){
     
 
     
-
     
     
 });
 
+Route::prefix('livekit')->name('livekit.')->group(function(){
+    Route::get('/generate/{chat_id}',[LiveKitController::class,'generate'])->name('generate');
+});
 
 
 Route::get('/test', [MessageController::class, 'test'])->name('test');

@@ -10,9 +10,10 @@ interface ChatQueryProps{
 }
 
 
+
 export const useChatQuery = ({queryRoute,value,queryKey}:ChatQueryProps) =>{
     const fetchMessages = async ({pageParam = undefined}) =>{
-        const {data} = await axios.get(queryRoute) as {data:PaginatedMessage};
+        const {data} = await axios.get(pageParam||queryRoute) as {data:PaginatedMessage};
         return data;
     }
 

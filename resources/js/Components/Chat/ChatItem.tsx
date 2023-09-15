@@ -13,13 +13,14 @@ import axios from 'axios';
 import { toast } from '../ui/use-toast';
 import { useModal } from '@/Hooks/useModalStore';
 interface ChatItemProps{
-    message:Message
+    message:Message;
+    type:"Channel"|"Conversation";
 }
 
 const DATE_FORMAT = "d MMMM yyyy HH:mm"
 
-const ChatItem:FC<ChatItemProps> = ({message}) => {
-    const {current_server,current_channel,auth} = usePage<PageProps>().props;
+const ChatItem:FC<ChatItemProps> = ({message,type}) => {
+    const {current_server,current_channel,auth,current_conversation} = usePage<PageProps>().props;
     const [newContent,setNewContent] = useState(message.content);
     const [loading,setLoading]  = useState(false);
     const [isEditing,setIsEditing]  = useState(false);
@@ -29,7 +30,7 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
     const role=useMemo(()=>current_server.users.find(({id})=>id===user.id)?.pivot.member_role,[current_server,user]);
     const fileType=message.file?.split(".").pop();
     
-    const canDeleteMsg = useMemo(()=>!message.deleted_at &&(role==='ADMIN'||role==='MODERATOR'||currentUser.id===message.user_id),[message,role]);
+    const canDeleteMsg = useMemo(()=>!message.deleted_at &&((type==='Channel'&&(role==='ADMIN'||role==='MODERATOR'))||currentUser.id===message.user_id),[message,role]);
     const canEditMsg = useMemo(()=>!message.deleted_at &&(currentUser.id===message.user_id) && !message.file,[message,role]);
     const fileImage = fileType==='pdf'?route('home')+'/uploads/pdf/pdf.png':message.file;
     
@@ -46,14 +47,21 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
     }
     const onSubmit:FormEventHandler<HTMLFormElement> = useCallback((e) => {
         e.preventDefault();
-        if(!current_channel){
+        if(!current_channel&&type=='Channel'){
+            return;
+        }
+        if(!current_conversation&&type==='Conversation'){
             return;
         }
         setLoading(true);
-        const updateRoute = route('server.channel.message.update',{
+        const updateRoute = type==='Channel'?route('server.channel.message.update',{
             server_id:current_server.id,
-            channel_id:current_channel.id,
+            channel_id:current_channel!.id,
+        }):route('server.conversation.update',{
+            server_id:current_server.id,
+            conversation_id:current_conversation!.id,
         });
+
         axios.post(updateRoute,{
             message:newContent,
             message_id:message.id
@@ -61,16 +69,23 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
         .then(()=>setIsEditing(false))
         .catch(()=>toast({title:'Internal Error',description:'Please Try Again'}))
         .finally(()=>setLoading(false));
-    },[current_channel,current_server,newContent,message.id]);
+    },[current_channel,current_server,newContent,message.id,type,current_conversation]);
 
     const onDelete = useCallback(() =>{
-        if(!current_channel){
+        if(!current_channel&&type=='Channel'){
             return;
         }
-        const deleteRoute = route('server.channel.message.destroy',{
+        if(!current_conversation&&type==='Conversation'){
+            return;
+        }
+        const deleteRoute = type==='Channel'? route('server.channel.message.destroy',{
             server_id:current_server.id,
-            channel_id:current_channel.id,
+            channel_id:current_channel!.id,
             message_id:message.id
+        }):route('server.conversation.destroy',{
+            server_id:current_server.id,
+            conversation_id:current_conversation!.id,
+            direct_message_id:message.id
         });
 
         onOpen('DeleteMessage',{
@@ -78,7 +93,7 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
         });
         
 
-    },[current_channel,current_server,message.id]);
+    },[current_channel,current_server,message.id,type,current_conversation]);
 
     useEffect(()=>{
         
@@ -120,7 +135,7 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
                     </div>
                     {
                         
-                        message.file&&(
+                        (message.file&&!message.deleted_at)&&(
                             <a href={message.file} target='_blank' rel='noopener noreferrer' className={cn('relative aspect-square rounded-md mt-1.5 overflow-hidden border flex items-center bg-secondary ',
                                 fileType==='pdf'?'h-10 w-10':'h-48 w-48')}  >
                                 <img src={fileImage} alt='file' className='object-cover' />
@@ -128,9 +143,9 @@ const ChatItem:FC<ChatItemProps> = ({message}) => {
                             
                         )
                     }
-                    <p className={cn('text-xs',fileType==='pdf'?'block':'hidden')}>PDF File</p>
+                    <p className={cn('text-xs',fileType==='pdf'&&!message.deleted_at?'block':'hidden')}>PDF File</p>
                     {
-                        (!message.file && !isEditing) && (
+                        ( !isEditing) && (
                             <p className={cn('text-sm text-neutral-600 dark:text-neutral-300',
                                 message.deleted_at && 'italic text-neutral-500 dark:text-neutral-400 text-xs mt-1')}>
                                 {!message.deleted_at?message.content:'Message Deleted'}

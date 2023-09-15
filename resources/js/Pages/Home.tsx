@@ -47,7 +47,7 @@ const Home = () => {
     },[current_channel?.id,queryClient]);
     return (
         <>
-            <Head title='Discord Clone' />
+            <Head title='Chat' />
                 <ConversationProvider>
                         <Layout>
                             <ServerIdLayout>

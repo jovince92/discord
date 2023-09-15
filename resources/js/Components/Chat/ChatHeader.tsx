@@ -4,6 +4,7 @@ import React, { FC } from 'react'
 import MobileToggle from '../MobileToggle';
 import UserAvatar from '../UserAvatar';
 import WebSocketIndicator from '../WebSocketIndicator';
+import ChatVideoButton from './ChatVideoButton';
 
 interface ChatHeaderProps{
     server:Server;
@@ -24,6 +25,9 @@ const ChatHeader:FC<ChatHeaderProps> = ({server,name,type,user}) => {
             }
             <p className='font-semibold text-base text-black dark:text-white'>{name}</p>
             <div className='ml-auto flex items-center'>
+                {
+                    type==='Conversation'&&<ChatVideoButton />
+                }
                 <WebSocketIndicator />
             </div>
         </div>

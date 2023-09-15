@@ -101,6 +101,7 @@ class MessageController extends Controller
         
         $msg=Message::find($message_id);
         
+        @unlink(public_path($msg->getAttributes()['file']));
         $msg->delete();
         broadcast(new MessageUpdateEvent(Message::with(['user'])->withTrashed()->where('id',$message_id)->first()));
     }

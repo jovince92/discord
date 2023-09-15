@@ -1,28 +1,29 @@
 import { PageProps, User } from '@/types';
 import { usePage } from '@inertiajs/react';
 import {FC,  Fragment,  useEffect,  useRef} from 'react'
-import ChatWelcome from './ChatWelcome';
 import { useChatQuery } from '@/Hooks/useChatQuery';
 import { Loader2, ServerCrash } from 'lucide-react';
-import ChatItem from './ChatItem';
 import { useChatScroll } from '@/Hooks/useChatScroll';
+import ChatWelcome from '@/Components/Chat/ChatWelcome';
+import ChatItem from '@/Components/Chat/ChatItem';
 
-interface ChatMessagesProps{
+interface ConversationMessagesProps{
     getMsgsRoute:string;
     type:"Channel"|"Conversation";
+    otherUser:User;
 }
 
-const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
+const ConversationMessages:FC<ConversationMessagesProps> = ({getMsgsRoute,type,otherUser}) => {
     
-    const {current_channel,auth} = usePage<PageProps>().props;
+    const {current_conversation,auth} = usePage<PageProps>().props;
     
-    if(!current_channel){
+    if(!current_conversation){
         return null;
     }
     const chatRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     
-    const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useChatQuery({queryRoute:getMsgsRoute,queryKey:`channel_${current_channel.id.toString()}`,value:"0"});
+    const {data,fetchNextPage,hasNextPage,isFetchingNextPage,status} = useChatQuery({queryRoute:getMsgsRoute,queryKey:`channel_${current_conversation.id.toString()}`,value:"0"});
     const  loadPreviousMsgs= () =>{
         if(!data?.pages){
             return null;
@@ -62,7 +63,7 @@ const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
                 !hasNextPage&&(
                     <>
                         <div className='flex-1' />
-                        <ChatWelcome type={type} name={current_channel.name} />
+                        <ChatWelcome type={type} name={otherUser.name} />
                     </>
                 )
             }
@@ -96,4 +97,4 @@ const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
     )
 }
 
-export default ChatMessages
+export default ConversationMessages
