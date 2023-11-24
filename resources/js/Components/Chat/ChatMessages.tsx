@@ -30,9 +30,11 @@ const ChatMessages:FC<ChatMessagesProps> = ({getMsgsRoute,type}) => {
         
         fetchNextPage();
     }
+
     useChatScroll({
         chatRef,bottomRef,loadMore:loadPreviousMsgs,shouldLoadMore:!isFetchingNextPage && !!hasNextPage,count:data?.pages?.[0]?.data.length ??0
     });
+    
     const paginatedMessages=data?.pages;
     
 

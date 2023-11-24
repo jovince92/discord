@@ -51,5 +51,7 @@ export const useChatScroll = (props:ChatScrollProps) =>{
             }),100);
         }
 
+        console.log(shouldAutoScroll());
+
     },[bottomRef,chatRef,count,hasInitialized]);
 }
